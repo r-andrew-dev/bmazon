@@ -58,6 +58,19 @@ function viewLowInventory() {
     })
 }
 
+function addtoInventory() {
+        inquirer.prompt([{
+            type: 'input',
+            name: 'name',
+            message: 'Please enter name of Product you would like to add:',
+            
 
+
+
+        
+        
+        
+        ])
+}
 
 

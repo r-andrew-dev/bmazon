@@ -39,45 +39,37 @@ function questions() {
     if (err) throw err 
   inquirer.prompt([
     {
-      type: 'input',
+      type: 'number',
       name: 'id',
       message: 'Please enter the ID # of the item you would like to purchase.',
-      validate: function (value) {
-        // regEx exp to validate input is a 1 - 3 digit number. Would need to be modified if over 999 products in database.
-        let pass = value.match(/^\d{1,3}$/);
-
-        if (pass) {
+      validate: function(value) {
+        if (isNaN(value) === false) {
           return true;
         }
-        return 'Please enter a valid product ID number up to 999 using digits 0-9.'
+        return 'Please enter a valid product ID number using digits 0-9.';
       }
     },
     {
-      type: 'input',
+      type: 'number',
       name: 'quantity',
       message: 'How many of this item would you like to purchase?',
       default: 0,
-      validate: function (value) {
-        // regEx exp to validate input is a 1-3 digit number. Would need to be updated if 
-        // any product had more than 999 in stock. 
-        let pass = value.match(/^\d{1,3}$/);
-
-        if (pass) {
+      validate: function(value) {
+        if (isNaN(value) === false) {
           return true;
         }
-        return 'Please enter a valid product quantity up to 999 as a number using digits 0-9.'
+        return 'Please enter a valid product quantity using digits 0-9.';
       }
-
     },
   ]).then(function (answer) {
       let chosenProduct;
       for (let i = 0; i < results.length; i++) {
-        if (results[i].id === parseInt(answer.id)) {
+        if (results[i].id === answer.id) {
           chosenProduct = results[i];
         }
       }
-        if (chosenProduct.stock_quantity >= parseInt(answer.quantity)) {
-          let newQuantity = chosenProduct.stock_quantity - parseInt(answer.quantity)
+        if (chosenProduct.stock_quantity >= answer.quantity) {
+          let newQuantity = chosenProduct.stock_quantity - answer.quantity
         connection.query(
           "UPDATE products SET ? WHERE ?", [
           {
