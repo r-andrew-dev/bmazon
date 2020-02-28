@@ -36,6 +36,7 @@ const confirm = function () {
         type: 'input',
         name: 'quantity',
         message: 'How many of this item would you like to purchase?',
+        default: 0,
         validate: function (value) {
           // regEx exp to validate input is a 1-3 digit number. Would need to be updated if 
           // any product had more than 999 in stock. 
@@ -48,27 +49,34 @@ const confirm = function () {
         }
 
       },
-    ]).then(answers => {
+    ]).then(function (answer) {
         let chosenProduct;
+        console.log(typeof(answer.id));
         for (let i = 0; i < results.length; i++) {
-          if (results[i].id === answers.id) {
+          console.log(typeof(results[i].id))
+          if (results[i].id === parseInt(answer.id)) {
+
             chosenProduct = results[i];
+            console.log(chosenProduct);
+            
+
+
           }
         }
-
-        if (chosenProduct.stock_quantity <= parseInt(answer.quantity)) {
+          if (chosenProduct.stock_quantity >= parseInt(answer.quantity)) {
+            let newQuantity = chosenProduct.stock_quantity - parseInt(answer.quantity)
           connection.query(
             "UPDATE products SET ? WHERE ?", [
             {
-              stock_quantity: (products.stock_quantity - answer.quantity)
+              stock_quantity: newQuantity
             },
             {
-              id: chosenProduct
+              id: chosenProduct.id
             }
           ],
             function (error) {
               if (error) throw err;
-              console.log("Order placed successfully! Your total is: " + (parseInt(chosenProduct.stock_quantity) * parseInt(chosenProduct.price)));
+              console.log("Order placed successfully! Your total is: " + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
               displayProducts();
             });
         }
@@ -78,21 +86,23 @@ const confirm = function () {
           console.log("I'm sorry. Your product ID was not available in our database or the quantity requested was too high")
           displayProducts();
         }
-      });
-
-      })}, function cancelled() {
+      }
+ )
+}, function cancelled() {
         console.log('Sorry to hear that. Thanks for stopping by!')
         connection.end()
       })
-  };
+  })
+
+}
 
   function displayProducts() {
     console.log("Welcome to the store! Fetching available products...\n");
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT * FROM products", function (err, results) {
       if (err) throw err;
       // Log all results of the SELECT statement
-      for (let i = 0; i < res.length; i++) {
-        console.log("ID: " + res[i].id + " | Product: " + res[i].product_name + " | Price: $" + res[i].price + ".00 | Available: " + res[i].stock_quantity +"\n");
+      for (let i = 0; i < results.length; i++) {
+        console.log("ID: " + results[i].id + " | Product: " + results[i].product_name + " | Price: $" + results[i].price + ".00 | Available: " + results[i].stock_quantity +"\n");
       }
       console.log("Welcome to the store! Please scroll up to see all available products. ");
       confirm()
