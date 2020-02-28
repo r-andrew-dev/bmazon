@@ -69,6 +69,7 @@ function questions() {
         }
       }
         if (chosenProduct.stock_quantity >= answer.quantity) {
+          console.log(chosenProduct.stock_quantity)
           let newQuantity = chosenProduct.stock_quantity - answer.quantity
         connection.query(
           "UPDATE products SET ? WHERE ?", [
@@ -90,8 +91,9 @@ function questions() {
 
       else {
 
-        console.log("I'm sorry. Your product ID was not available in our database or the quantity requested was too high")
-        displayProducts();
+        console.log("I'm sorry. Your product ID was not available in our database or the quantity requested was higher than available.")
+        inqConfirm("Would you like to see our products again?")
+            .then(displayProducts, cancelled) 
       }
     })
 

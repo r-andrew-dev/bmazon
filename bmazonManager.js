@@ -70,7 +70,7 @@ function viewLowInventory() {
 function addtoInventory() {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err
-        inquirer.prompt([
+        prompt([
             {
                 type: 'number',
                 name: 'id',
@@ -93,17 +93,18 @@ function addtoInventory() {
                     return 'Please enter a valid product ID number using digits 0-9.';
                 }
             },]).then(function (answer) {
-                console.log(results);
-                console.log(typeof(results[1].id))
-                console.log(typeof(answer.id));
                 let chosenProduct;
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].id === answer.id) {
                         chosenProduct = results[i].id;
-                        console.log(chosenProduct);
                     }
                 }
+                if(answer.quantity > 0) {
+                    console.log(answer.quantity)
+                    console.log(chosenProduct.stock_quantity)
                 let newInventory = chosenProduct.stock_quantity + answer.quantity
+                console.log("made it here")
+                console.log(newInventory);
                 connection.query(
                     "UPDATE products SET ? WHERE?", [
                     {
@@ -117,9 +118,17 @@ function addtoInventory() {
                         if (error) throw err;
                         console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
                         displayOptions();
-                    })
-            })
-    })
-}
+                    });
+                }
+
+                else {
+
+                    console.log("I'm sorry. The ID you entered is either not in our database or the quantity you entered is invalid.")
+                    displayOptions();
+                  }
+                })
+            
+              })
+            }
 
 
