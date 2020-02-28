@@ -37,7 +37,6 @@ inqConfirm("Would you like to see our products again?")
 function questions() {
   connection.query("SELECT * FROM products", function(err, results) {
     if (err) throw err 
-    confirm();
   inquirer.prompt([
     {
       type: 'input',
@@ -90,7 +89,7 @@ function questions() {
         ],
           function (error) {
             if (error) throw err;
-            console.log("Order placed successfully! Thank you for your order. Your total is: " + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
+            console.log("Order placed successfully! Thank you for your order. Your total is: $" + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
             inqConfirm("Would you like to see our products again?")
             .then(displayProducts, cancelled)      
           });
