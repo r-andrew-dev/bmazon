@@ -96,17 +96,14 @@ function addtoInventory() {
                 let chosenProduct;
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].id === answer.id) {
-                        chosenProduct = results[i].id;
+                        chosenProduct = results[i];
                     }
                 }
                 if(answer.quantity > 0) {
-                    console.log(answer.quantity)
-                    console.log(chosenProduct.stock_quantity)
                 let newInventory = chosenProduct.stock_quantity + answer.quantity
-                console.log("made it here")
-                console.log(newInventory);
+  
                 connection.query(
-                    "UPDATE products SET ? WHERE?", [
+                    "UPDATE products SET ? WHERE ?", [
                     {
                         stock_quantity: newInventory
                     },
@@ -115,7 +112,7 @@ function addtoInventory() {
                     }
                 ],
                     function (error) {
-                        if (error) throw err;
+                        if (error) throw error;
                         console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
                         displayOptions();
                     });
