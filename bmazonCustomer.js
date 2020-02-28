@@ -81,7 +81,8 @@ function questions() {
         ],
           function (error) {
             if (error) throw err;
-            console.log("Order placed successfully! Thank you for your order. Your total is: $" + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
+            console.log("Your order for " + answer.quantity + " " + chosenProduct.product_name + "(s) was placed successfully! Thank you for your order.\n"
+            + "Your total is: $" + answer.quantity * chosenProduct.price);
             inqConfirm("Would you like to see our products again?")
             .then(displayProducts, cancelled)      
           });

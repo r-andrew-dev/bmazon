@@ -6,7 +6,24 @@ const connection = mysql.createConnection({
     host: 'localhost', port: 3306, user: 'root', password: 'Midnight*1', database: 'bmazon'
 });
 
+const prompt = inquirer.createPromptModule();
+
 start()
+
+function choose() {
+    connection.query("SELECT * from PRODUCTS")
+    let chosenProduct;
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].id === answer.id) {
+        chosenProduct = results[i];
+      }
+    }
+}
+
+function cancelled() {
+    console.log( 'Thanks for stopping by!')
+    connection.end()
+  }
 
 function start() {
     connection.connect(function (err) {
@@ -17,12 +34,12 @@ function start() {
 };
 
 function displayOptions() {
-    inquirer.prompt({
+    prompt({
         type: 'list',
         name: 'managerOptions',
         message: 'What would you like to do?',
         choices: ['View Products for Sale', 'View Low Inventory',
-            'Add to Inventory', 'Add New Product to Inventory']
+            'Add to Inventory', 'Add New Product to Inventory', 'EXIT']
     }).then(function (answer) {
 
         switch (answer.managerOptions) {
@@ -34,9 +51,9 @@ function displayOptions() {
                 break;
             case 'Add to Inventory':
                 addtoInventory();
-            case 'Add New Product to Inventory':
-                addNewProduct()
-                break;
+            // case 'Add New Product to Inventory':
+            //     addNewProduct()
+            //     break;
             default: connection.end();
 
         }
@@ -47,6 +64,7 @@ function viewProducts() {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
         console.table(results);
+        displayOptions();
 
     })
 }
@@ -55,22 +73,50 @@ function viewLowInventory() {
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, results) {
         if (err) throw err;
         console.table(results);
+        displayOptions();
     })
 }
 
 function addtoInventory() {
-        inquirer.prompt([{
-            type: 'input',
-            name: 'name',
-            message: 'Please enter name of Product you would like to add:',
-            
+    inquirer.prompt([
+    {
+        type: 'number',
+        name: 'id',
+        message: 'Please enter the ID # of the item you would like to add inventory for.',
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return 'Please enter a valid product ID number using digits 0-9.';
+        }
+    },
+        {
+        type: 'number',
+        name: 'quantity',
+        message: 'How many to add to inventory?',
+        validate: function (value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return 'Please enter a valid product ID number using digits 0-9.';
+        }
+    },]).then(function(answer) {
+        choose()
+        let newInventory = chosenProduct.stock_quantity + answer.quantity
+        connection.query("UPDATE products SET ? WHERE?", [
+            {
+                stock_quantity: newInventory
+            },
+            {
+                id: chosenProduct.id
+            }
+        ], function (error) {
+            if (error) throw err;
+            console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
+            displayOptions();
+        })
+    })
 
-
-
-        
-        
-        
-        ])
 }
 
 
