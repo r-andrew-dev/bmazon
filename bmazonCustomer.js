@@ -51,16 +51,9 @@ const confirm = function () {
       },
     ]).then(function (answer) {
         let chosenProduct;
-        console.log(typeof(answer.id));
         for (let i = 0; i < results.length; i++) {
-          console.log(typeof(results[i].id))
           if (results[i].id === parseInt(answer.id)) {
-
             chosenProduct = results[i];
-            console.log(chosenProduct);
-            
-
-
           }
         }
           if (chosenProduct.stock_quantity >= parseInt(answer.quantity)) {
@@ -76,8 +69,9 @@ const confirm = function () {
           ],
             function (error) {
               if (error) throw err;
-              console.log("Order placed successfully! Your total is: " + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
-              displayProducts();
+              console.log("Order placed successfully! Thank you for your order. Your total is: " + (parseInt(answer.quantity) * parseInt(chosenProduct.price)));
+              inqConfirm("Would you like to see our products again?")
+              .then(displayProducts, cancelled)      
             });
         }
 
@@ -88,23 +82,25 @@ const confirm = function () {
         }
       }
  )
-}, function cancelled() {
-        console.log('Sorry to hear that. Thanks for stopping by!')
-        connection.end()
-      })
+}, cancelled)
   })
 
 }
 
+function cancelled() {
+  console.log( 'Thanks for stopping by!')
+  connection.end()
+}
+
   function displayProducts() {
-    console.log("Welcome to the store! Fetching available products...\n");
+    console.log("Welcome! Fetching available products...\n");
     connection.query("SELECT * FROM products", function (err, results) {
       if (err) throw err;
       // Log all results of the SELECT statement
       for (let i = 0; i < results.length; i++) {
         console.log("ID: " + results[i].id + " | Product: " + results[i].product_name + " | Price: $" + results[i].price + ".00 | Available: " + results[i].stock_quantity +"\n");
       }
-      console.log("Welcome to the store! Please scroll up to see all available products. ");
+      console.log("Salutations! Please scroll up to see all available products. ");
       confirm()
     });
   }
