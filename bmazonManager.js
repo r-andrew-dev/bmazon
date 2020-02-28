@@ -10,20 +10,10 @@ const prompt = inquirer.createPromptModule();
 
 start()
 
-function choose() {
-    connection.query("SELECT * from PRODUCTS")
-    let chosenProduct;
-    for (let i = 0; i < results.length; i++) {
-      if (results[i].id === answer.id) {
-        chosenProduct = results[i];
-      }
-    }
-}
-
 function cancelled() {
-    console.log( 'Thanks for stopping by!')
+    console.log('Thanks for stopping by!')
     connection.end()
-  }
+}
 
 function start() {
     connection.connect(function (err) {
@@ -78,45 +68,58 @@ function viewLowInventory() {
 }
 
 function addtoInventory() {
-    inquirer.prompt([
-    {
-        type: 'number',
-        name: 'id',
-        message: 'Please enter the ID # of the item you would like to add inventory for.',
-        validate: function (value) {
-            if (isNaN(value) === false) {
-                return true;
-            }
-            return 'Please enter a valid product ID number using digits 0-9.';
-        }
-    },
-        {
-        type: 'number',
-        name: 'quantity',
-        message: 'How many to add to inventory?',
-        validate: function (value) {
-            if (isNaN(value) === false) {
-                return true;
-            }
-            return 'Please enter a valid product ID number using digits 0-9.';
-        }
-    },]).then(function(answer) {
-        choose()
-        let newInventory = chosenProduct.stock_quantity + answer.quantity
-        connection.query("UPDATE products SET ? WHERE?", [
+    connection.query("SELECT * FROM products", function (err, results) {
+        if (err) throw err
+        inquirer.prompt([
             {
-                stock_quantity: newInventory
+                type: 'number',
+                name: 'id',
+                message: 'Please enter the ID # of the item you would like to add inventory for.',
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return 'Please enter a valid product ID number using digits 0-9.';
+                }
             },
             {
-                id: chosenProduct.id
-            }
-        ], function (error) {
-            if (error) throw err;
-            console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
-            displayOptions();
-        })
+                type: 'number',
+                name: 'quantity',
+                message: 'How many to add to inventory?',
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return 'Please enter a valid product ID number using digits 0-9.';
+                }
+            },]).then(function (answer) {
+                console.log(results);
+                console.log(typeof(results[1].id))
+                console.log(typeof(answer.id));
+                let chosenProduct;
+                for (let i = 0; i < results.length; i++) {
+                    if (results[i].id === answer.id) {
+                        chosenProduct = results[i].id;
+                        console.log(chosenProduct);
+                    }
+                }
+                let newInventory = chosenProduct.stock_quantity + answer.quantity
+                connection.query(
+                    "UPDATE products SET ? WHERE?", [
+                    {
+                        stock_quantity: newInventory
+                    },
+                    {
+                        id: chosenProduct.id
+                    }
+                ],
+                    function (error) {
+                        if (error) throw err;
+                        console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
+                        displayOptions();
+                    })
+            })
     })
-
 }
 
 
