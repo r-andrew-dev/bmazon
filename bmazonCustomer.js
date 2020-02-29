@@ -69,7 +69,6 @@ function questions() {
         }
       }
         if (chosenProduct.stock_quantity >= answer.quantity) {
-          console.log(chosenProduct.stock_quantity)
           let newQuantity = chosenProduct.stock_quantity - answer.quantity
         connection.query(
           "UPDATE products SET ? WHERE ?", [

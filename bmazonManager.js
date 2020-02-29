@@ -41,11 +41,11 @@ function displayOptions() {
                 break;
             case 'Add to Inventory':
                 addtoInventory();
-            // case 'Add New Product to Inventory':
-            //     addNewProduct()
-            //     break;
-            default: connection.end();
-
+                break;
+            case 'Add New Product to Inventory':
+                addNewProduct()
+                break;
+            default: connection.end()
         }
     })
 }
@@ -92,18 +92,20 @@ function addtoInventory() {
                     }
                     return 'Please enter a valid product ID number using digits 0-9.';
                 }
-            },]).then(function (answer) {
-                let chosenProduct;
-                for (let i = 0; i < results.length; i++) {
-                    if (results[i].id === answer.id) {
-                        chosenProduct = results[i];
-                    }
+            },
+        ]).then(function (answer) {
+            let chosenProduct;
+            for (let i = 0; i < results.length; i++) {
+                if (results[i].id === answer.id) {
+                    chosenProduct = results[i];
                 }
-                if(answer.quantity > 0) {
+            }
+            if (answer.quantity > 0) {
                 let newInventory = chosenProduct.stock_quantity + answer.quantity
-  
+                console.log(newInventory);
+                console.log(chosenProduct.id);
                 connection.query(
-                    "UPDATE products SET ? WHERE ?", [
+                    "UPDATE products SET stock_quantity ? WHERE id ?", [
                     {
                         stock_quantity: newInventory
                     },
@@ -111,21 +113,52 @@ function addtoInventory() {
                         id: chosenProduct.id
                     }
                 ],
-                    function (error) {
-                        if (error) throw error;
-                        console.log(chosenProduct.product_name + "stock_quantity has been updated to: " + newInventory)
+                    function (error, response) {
+                        if (error) throw err;
+                        console.log(chosenProduct.product_name + " stock_quantity has been updated to: " + newInventory)
                         displayOptions();
                     });
+            }
+
+            else {
+
+                console.log("I'm sorry. The ID you entered is either not in our database or the quantity you entered is invalid.")
+                displayOptions();
+            }
+        })
+
+    })
+}
+
+function addNewProduct() {
+    connection.query("SELECT * FROM products", function (err, results) {
+        if (err) throw err
+        prompt([
+            {
+                type: 'input',
+                name: 'product_name',
+                message: 'Please enter a name for the product to add to database.',
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return 'Please enter a valid product name.';
+                }
+            },
+            {
+                type: 'number',
+                name: 'quantity',
+                message: 'How many to add to inventory?',
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return 'Please enter a valid product ID number using digits 0-9.';
                 }
 
-                else {
+            },
 
-                    console.log("I'm sorry. The ID you entered is either not in our database or the quantity you entered is invalid.")
-                    displayOptions();
-                  }
-                })
-            
-              })
-            }
+
+
 
 
