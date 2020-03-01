@@ -139,7 +139,7 @@ function addNewProduct() {
                 name: 'product_name',
                 message: 'Please enter a name for the product to add to database.',
                 validate: function (value) {
-                    if (isNaN(value) === false) {
+                    if (isNaN(value) === true) {
                         return true;
                     }
                     return 'Please enter a valid product name.';
@@ -153,10 +153,59 @@ function addNewProduct() {
                     if (isNaN(value) === false) {
                         return true;
                     }
-                    return 'Please enter a valid product ID number using digits 0-9.';
-                }
+                    return 'Please enter a valid product quantity using digits 0-9.';
 
+                }
             },
+            {
+                type: 'input',
+                name: 'deptartment',
+                message: 'What department would you like it added to?',
+                validate: function (value) {
+                    if (isNaN(value) === true) {
+                        return true;
+                    }
+                    return 'Please enter a valid department.';
+
+                }
+            },
+            {
+                type: 'number',
+                name: 'cost',
+                message: 'How much should one of these items cost?',
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return 'Please enter a valid product cost using digits 0-9.';
+
+                }
+            },
+        ]).then(function (answer) {
+            let newCost = answer.cost;
+            let newProduct = answer.product_name;
+            let newQuantity = answer.quantity;
+            let newDepartment = answer.deptartment;
+            console.log("Inserting a new product...\n");
+            connection.query(
+                "INSERT INTO products SET ?",
+                {
+                    product_name: newProduct,
+                    department_name: newDepartment,
+                    price: newCost,
+                    stock_quantity: newQuantity,
+                },
+                function (err, res) {
+                    if (err) throw err;
+                    viewProducts();
+                }
+            )
+        })
+    })
+}
+
+
+
 
 
 
