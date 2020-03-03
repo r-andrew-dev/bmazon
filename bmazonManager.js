@@ -157,16 +157,12 @@ function addNewProduct() {
                 }
             },
             {
-                type: 'input',
-                name: 'deptartment',
+                type: 'list',
+                name: 'department',
                 message: 'What department would you like it added to?',
-                validate: function (value) {
-                    if (isNaN(value) === true) {
-                        return true;
-                    }
-                    return 'Please enter a valid department.';
-
-                }
+                choices: ['Sporting Goods', 'cookware', 'Home&Decor', 'Toys', 'Instruments', 'Home&Garden',
+                            'electronics', 'food', 'automotive']
+    
             },
             {
                 type: 'number',
@@ -181,10 +177,11 @@ function addNewProduct() {
                 }
             },
         ]).then(function (answer) {
+            console.log(answer.department);
             let newCost = answer.cost;
             let newProduct = answer.product_name;
             let newQuantity = answer.quantity;
-            let newDepartment = answer.deptartment;
+            let newDepartment = answer.department;
             console.log("Inserting a new product...\n");
             connection.query(
                 "INSERT INTO products SET ?",
