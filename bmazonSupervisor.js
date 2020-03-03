@@ -44,8 +44,8 @@ function displayOptions() {
 }
 
 function viewProductSales() {
-    let query = "SELECT d.dept_id, d.department_name, "
-    query += "SUM(p.product_sales) AS dept_sales FROM products p "
+    let query = "SELECT d.dept_id, d.department_name, d.over_head_costs, "
+    query += "SUM(p.product_sales) AS dept_sales, SUM(p.product_sales) - over_head_costs AS total_profit FROM products p "
     query += "JOIN departments d ON p.department_name = d.department_name "
     query += "GROUP BY d.dept_id, d.department_name ORDER BY dept_sales DESC;"
     connection.query(query, function(err, results) {
