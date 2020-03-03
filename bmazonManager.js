@@ -101,8 +101,6 @@ function addtoInventory() {
             }
             if (answer.quantity > 0) {
                 let newInventory = chosenProduct.stock_quantity + answer.quantity
-                console.log(newInventory);
-                console.log(chosenProduct.id);
                 connection.query(
                     "UPDATE products SET ? WHERE ?", [
                     {
