@@ -30,15 +30,26 @@ function displayOptions() {
         choices: ['View Product Sales by Department', 'Create New Department', 'EXIT']
     }).then(function (answer) {
 
-        switch (answer.managerOptions) {
+        switch (answer.supervisorOptions) {
             case 'View Product Sales by Department':
                 viewProductSales()
                 break;
             case 'Create New Department':
                 createNewDepartment()
                 break;
-            default: connection.end()
+            default: 
+            cancelled();
         }
     })
 }
 
+function viewProductSales() {
+    let query = "SELECT products.department_name, departments.over_head_costs, products.product_sales, "
+    query += "COUNT(products.product_sales) AS product_sales "
+    query += "FROM departments INNER JOIN products ON products.department_name = departments.department_name "
+    query += "GROUP BY department_name"
+    connection.query(query, function(err, results) {
+        if (err) throw err;
+        console.table(results);
+    })
+}
