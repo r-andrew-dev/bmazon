@@ -104,7 +104,7 @@ function addtoInventory() {
                 console.log(newInventory);
                 console.log(chosenProduct.id);
                 connection.query(
-                    "UPDATE products SET stock_quantity ? WHERE id ?", [
+                    "UPDATE products SET ? WHERE ?", [
                     {
                         stock_quantity: newInventory
                     },
