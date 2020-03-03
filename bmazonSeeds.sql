@@ -2,6 +2,13 @@ CREATE DATABASE bmazon;
 
 USE bmazon;
 
+CREATE TABLE departments (
+    dept_id INT NOT NULL AUTO_INCREMENT, 
+    department_name VARCHAR(200) NOT NULL,
+    over_head_costs DECIMAL(20,2) NOT NULL,
+    PRIMARY KEY (dept_id)
+)
+
 CREATE TABLE products (
     id INT NOT NULL AUTO_INCREMENT, 
     product_name VARCHAR(200) NOT NULL,

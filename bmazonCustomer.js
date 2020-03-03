@@ -70,10 +70,14 @@ function questions() {
       }
         if (chosenProduct.stock_quantity >= answer.quantity) {
           let newQuantity = chosenProduct.stock_quantity - answer.quantity
+          let sales = chosenProduct.product_sales + (answer.quantity * chosenProduct.price)
         connection.query(
-          "UPDATE products SET ? WHERE ?", [
+          "UPDATE products SET ?, ? WHERE ?", [
           {
             stock_quantity: newQuantity
+          },
+          {
+            product_sales: sales
           },
           {
             id: chosenProduct.id
