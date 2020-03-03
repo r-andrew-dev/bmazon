@@ -44,10 +44,10 @@ function displayOptions() {
 }
 
 function viewProductSales() {
-    let query = "SELECT products.department_name, departments.over_head_costs, products.product_sales, "
-    query += "COUNT(products.product_sales) AS product_sales "
-    query += "FROM departments INNER JOIN products ON products.department_name = departments.department_name "
-    query += "GROUP BY department_name"
+    let query = "SELECT d.dept_id, d.department_name, "
+    query += "SUM(p.product_sales) AS dept_sales FROM products p "
+    query += "JOIN departments d ON p.department_name = d.department_name "
+    query += "GROUP BY d.dept_id, d.department_name ORDER BY dept_sales DESC;"
     connection.query(query, function(err, results) {
         if (err) throw err;
         console.table(results);
