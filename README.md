@@ -14,7 +14,7 @@ Bmazon features three different CLI(s) depending which .js file is opened using 
 
 ---------------------------------------------------------------------
 
-To use bmazon, you will need node installed. Recommended SQL database is MySQL, but a database compatible with MySQL is required.
+To use bmazon, you will need node installed. Recommended SQL database is MySQL, but a database server compatible with MySQL is required.
 Once you have downloaded the repo, start by putting bmazonSeeds.sql into your MySQL database. 
 Feel free to change the INSERT INTO to your own products, but pay attention to the required columns and and column types to ensure proper insert. 
 
