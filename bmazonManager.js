@@ -62,6 +62,7 @@ function viewLowInventory() {
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, results) {
         if (err) throw err;
         console.table(results);
+        console.log("Displaying items with less than five in stock.")
         displayOptions();
     })
 }
