@@ -180,7 +180,6 @@ function addNewProduct() {
                 }
             },
         ]).then(function (answer) {
-            console.log(answer.department);
             let newCost = answer.cost;
             let newProduct = answer.product_name;
             let newQuantity = answer.quantity;
