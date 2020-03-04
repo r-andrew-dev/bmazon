@@ -128,7 +128,7 @@ function addtoInventory() {
 }
 
 function addNewProduct() {
-    connection.query("SELECT * FROM products", function (err, results) {
+    connection.query("SELECT department_name FROM departments", function (err, results) {
         if (err) throw err
         prompt([
             {
@@ -158,8 +158,13 @@ function addNewProduct() {
                 type: 'list',
                 name: 'department',
                 message: 'What department would you like it added to?',
-                choices: ['Sporting Goods', 'cookware', 'Home&Decor', 'Toys', 'Instruments', 'Home&Garden',
-                            'electronics', 'food', 'automotive']
+                choices: function() {
+                    var choiceArray = [];
+                    for (var i = 0; i < results.length; i++) {
+                      choiceArray.push(results[i].department_name);
+                    }
+                    return choiceArray;
+                }
     
             },
             {
@@ -181,8 +186,7 @@ function addNewProduct() {
             let newQuantity = answer.quantity;
             let newDepartment = answer.department;
             console.log("Inserting a new product...\n");
-            connection.query(
-                "INSERT INTO products SET ?",
+            connection.query("INSERT INTO products SET ?",
                 {
                     product_name: newProduct,
                     department_name: newDepartment,
